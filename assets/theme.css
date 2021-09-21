@@ -1,0 +1,101 @@
+body {
+    font-size: 14px;
+    font-family: sans-serif;
+    margin: 0;
+    background-color: #222;
+    color: #c5bbbb;
+    letter-spacing: 1px;
+    font-weight: 300;
+    margin: 20px;
+}
+
+button,
+.button {
+    margin: 8px;
+    padding: 14px;
+    background: #e6e6e6;
+    display: inline-block;
+    border-radius: 4px;
+    text-decoration: none;
+    text-align: center;
+    color: black;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: sans-serif;
+    border: none;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.05) 40%, rgba(0, 0, 0, 0.1));
+}
+
+.button:focus {
+    box-shadow: 0 0 0px 4px #658df9;
+    outline: none;
+}
+
+.button.is-primary {
+    background: #ffe724;
+    box-shadow: 0px 0px 7px #8a8656;
+}
+
+input[type="file"] {
+    position: absolute;
+    top: 0px;
+    left: 0;
+    right: 0px;
+    bottom: 0px;
+    width: 100%;
+    -webkit-tap-highlight-color: transparent;
+    opacity: 0;
+    z-index: 1;
+}
+
+.choose-iso {
+    position: relative;
+    width: 200px;
+    margin: 10px auto;
+    overflow: hidden;
+}
+
+.has-centered {
+    text-align: center;
+}
+
+.boxes {
+    display: flex;
+}
+
+.box {
+    padding: 8px;
+    border: 1px solid #414141;
+}
+
+.boxes>.box {
+    flex: 1;
+}
+
+#progress-bar {
+    height: 6px;
+    width: 0%;
+    background-color: #ffe724;
+}
+
+.code {
+    font-family: monospace;
+    font-weight: 600;
+    background-color: black;
+    padding: 4px;
+    border-radius: 6px;
+    color: #fbcc56;
+}
+
+#account-field {
+    background: none;
+    border: 0;
+    color: #fbcc56;
+    padding: 4px;
+    border-radius: 6px;
+}

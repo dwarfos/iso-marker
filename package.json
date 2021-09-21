@@ -1,0 +1,19 @@
+{
+    "name": "dwarfos-iso-marker",
+    "version": "1.0.0",
+    "description": "DwarfOs.iso Account Marker",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "lint": "eslint .",
+        "fix": "eslint --fix ."
+    },
+    "author": "sseir",
+    "license": "ISC",
+    "dependencies": {
+        "electron": "^11.2.0"
+    },
+    "devDependencies": {
+        "eslint": "^7.18.0"
+    }
+}

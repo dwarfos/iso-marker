@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="assets/theme.css">
+
+<head>
+    <title>Dwarfos ISO Account Manager</title>
+</head>
+
+<body>
+    <div class="box has-centered">
+        <img src="assets/dwarfos.svg" />
+    </div>
+    <div class="box has-centered">
+        <div class="button choose-iso">
+            Choose your ISO file
+            <input id="iso-file-selector" type="file" id="file" autofocus />
+        </div>
+        <div>
+            <!-- will show selected file path here-->
+            <span id="selected-file-path"></span>
+        </div>
+    </div>
+    <div id="progress-bar"></div>
+    <div class="box">
+        <p>
+            File account offset: <span id="account-offset" class="code"></span>
+        </p>
+        <p>
+            Current account: <span id="account-current" class="code"></span>
+        </p>
+    </div>
+    <div class="box has-centered">
+        Set account:
+        <input id="account-field" type="text">
+    </div>
+    <div class="box has-centered">
+        <button id="set-account" class="button is-primary" disabled>Set Account</button>
+    </div>
+</body>
+<script src="window.js">
+    // set triggers on inputs
+    document.querySelector("#iso-file-selector").addEventListener("change",
+        onIsoFileSelectorChange);
+    document.querySelector("#set-account").addEventListener("click",
+        onSetAccountClick);
+</script>
+
+</html>
