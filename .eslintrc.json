@@ -1,0 +1,21 @@
+{
+  "root": true,
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "parser": "babel-eslint"
+  },
+  "extends": ["eslint:recommended"],
+  "rules": {
+    "semi": ["error", "always"],
+    "quotes": ["error", "double"],
+    "indent": [1, 4],
+    "consistent-return": 2,
+    "no-else-return": 1,
+    "space-unary-ops": 2
+  }
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <link rel="stylesheet" href="assets/theme.css" />
+
+  <head>
+    <title>Dwarfos ISO Account Manager</title>
+  </head>
+
+  <body>
+    <div class="box has-centered">
+      <img src="assets/dwarfos.svg" />
+    </div>
+    <div class="box has-centered">
+      <div>
+        <button class="button choose-iso" id="file-open">
+          Choose Your ISO File
+        </button>
+        <button class="button choose-iso" id="file-save">
+          Download Your ISO File
+        </button>
+      </div>
+    </div>
+    <div class="box has-centered">
+      <!-- will show the current state of task here -->
+      <span id="progress-status"></span>
+    </div>
+    <div id="progress-bar"></div>
+    <div class="box">
+      <!-- will show selected file path here -->
+      <span id="file-path"></span>
+    </div>
+    <div style="display: none" id="file-data">
+      <div class="box">
+        <!-- below will be shown file offset used for account if found -->
+        <p>
+          File account offset: <span id="account-offset" class="code"></span>
+        </p>
+        <!-- below will contain the account if it is found in the file -->
+        <p>Current account: <span id="account-found" class="code"></span></p>
+      </div>
+      <div class="box has-centered">
+        <!-- here will be the input for entering new account to set in the file  -->
+        Set account:
+        <input id="account-field" type="text" />
+      </div>
+      <div class="box has-centered">
+        <button id="account-set" class="button is-primary" disabled>
+          Set Account
+        </button>
+      </div>
+    </div>
+  </body>
+  <script src="mainWindow.js">
+    //
+  </script>
+</html>
