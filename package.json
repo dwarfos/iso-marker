@@ -1,0 +1,23 @@
+{
+  "name": "dwarfos-iso-marker",
+  "version": "1.0.0",
+  "description": "Dwarfos Iso Account Manager",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "lint": "eslint .",
+    "fix": "eslint --fix .",
+    "pretty-w": "npx prettier --write .",
+    "pretty-c": "npx prettier --check ."
+  },
+  "author": "sseir",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^11.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.18.0",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "2.4.1"
+  }
+}
