@@ -1,15 +1,19 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require("electron");
 const path = require("path");
 
-// test lib read (valid .iso file required)
-const WindowInstance = require("./lib/window-instance");
-
-const test = async (iso) => {
-  const windowInstance = new WindowInstance(iso);
-  //windowInstance.startDownload();
-  windowInstance.checkAccount();
-};
-// test end
+// dev v
+let test = function () {};
+import("./lib/window-handler.mjs").then((module) => {
+  const { WindowHandler } = module;
+  test = async (iso) => {
+    const windowInstance = WindowHandler.newInstance(iso);
+    const accountFound = await windowInstance.accountFound; // looks for account on instance filePath;
+    const accountOffset = windowInstance.accountOffset; // offset of found account within given filePath;
+    console.log(accountFound);
+    console.log(accountOffset);
+  };
+});
+// dev ^
 
 // Win funcs
 let mainWindow; // the one and only window variable used in this app.
@@ -22,13 +26,7 @@ ipcMain.on("event:file-save-click", () =>
       properties: ["openFile", "openDirectory", "showOverwriteConfirmation"],
     })
     .then((result) => {
-      if (
-        result.canceled === true ||
-        result.filePath == "" ||
-        result.filePath == null ||
-        result.filePath == undefined
-      )
-        return;
+      if (result.canceled) return;
       mainWindow.webContents.send("event:file-data-hide"); // prevents visual glitch
       resizeWindow(640, 330);
       mainWindow.webContents.send("event:file-save", result.filePath);
@@ -44,14 +42,8 @@ ipcMain.on("event:file-open-click", () =>
       properties: ["openFile"],
     })
     .then((result) => {
-      if (
-        result.canceled === true ||
-        result.filePaths[0] == "" ||
-        result.filePaths[0] == null ||
-        result.filePaths[0] == undefined
-      )
-        return;
-      test(result.filePaths[0]);
+      if (result.canceled) return;
+      test(result.filePaths[0]); // dev call
       mainWindow.webContents.send("event:file-data-hide"); // prevents visual glitch
       resizeWindow(640, 330);
       mainWindow.webContents.send("event:file-open", result.filePaths[0]);
