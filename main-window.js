@@ -4,7 +4,6 @@ const fs = require("fs");
 
 // global var
 let filePath;
-let accountOffset;
 let windowInstance;
 
 // FE funcs
@@ -56,7 +55,7 @@ const onFileOffsetNotFound = () => {
   document.querySelector("#account-set").disabled = true;
 };
 
-const onFileOffsetFound = (accountFound) => {
+const onFileOffsetFound = (accountFound, accountOffset) => {
   fileDataShow();
   document.querySelector("#progress-status").innerHTML =
     "File Offset Successfully Found!";
@@ -88,53 +87,25 @@ function FileProgress(fileSize, download) {
   this.init(0);
 }
 
-// dev v
 import("./lib/window-handler.mjs").then((mjs) => {
   const { WindowHandler } = mjs;
   windowInstance = WindowHandler.newInstance(null, FileProgress);
 });
-// dev ^
 
 const onFileOpen = async (e, data) => {
   windowInstance.selectedFile = filePath = data;
   windowInstance.accountFound
     .then((accountFound) => {
-      accountOffset = windowInstance.accountOffset;
-      onFileOffsetFound(accountFound);
+      onFileOffsetFound(accountFound, windowInstance.accountOffset);
     })
     .catch((e) => {
-      console.log(e);
       onFileOffsetNotFound();
     });
-
-  //const size = fs.statSync(filePath).size;
-  //const progress = new FileProgress(size);
-  //progress.update(chunk.length);
 };
 
 const onAccountSet = () => {
-  const account = document.querySelector("#account-field").value; // read new account from input
-  //if (account == "") account = "000000000000000000000000";  //
-  let bufferCharArray = [];
-  const accountCharArray = account.split("");
-  let nlPos;
-  for (let charPos = 0; charPos < 24; charPos++) {
-    if (accountCharArray[charPos] !== undefined) {
-      bufferCharArray.push(accountCharArray[charPos]);
-      continue;
-    }
-    if (nlPos === undefined) {
-      nlPos = charPos;
-      bufferCharArray.push("\n");
-      continue;
-    }
-    bufferCharArray.push("0");
-  }
-  const bufferAccount = bufferCharArray.join("");
-  const buf = new Buffer.from(bufferAccount, ["latin1"]);
-  const write = fs.openSync(filePath, "r+");
-  fs.writeSync(write, buf, 0, buf.length, accountOffset);
-  fs.close(write, () => onFileOpen(undefined, filePath)); // account was set - reload file
+  windowInstance.account = document.querySelector("#account-field").value;
+  onFileOpen(undefined, filePath);
 };
 
 const onFileSave = (e, data) => {
