@@ -1,20 +1,6 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require("electron");
 const path = require("path");
 
-// dev v
-let test = function () {};
-import("./lib/window-handler.mjs").then((module) => {
-  const { WindowHandler } = module;
-  test = async (iso) => {
-    const windowInstance = WindowHandler.newInstance(iso);
-    const accountFound = await windowInstance.accountFound; // looks for account on instance filePath;
-    const accountOffset = windowInstance.accountOffset; // offset of found account within given filePath;
-    console.log(accountFound);
-    console.log(accountOffset);
-  };
-});
-// dev ^
-
 // Win funcs
 let mainWindow; // the one and only window variable used in this app.
 
@@ -43,7 +29,6 @@ ipcMain.on("event:file-open-click", () =>
     })
     .then((result) => {
       if (result.canceled) return;
-      test(result.filePaths[0]); // dev call
       mainWindow.webContents.send("event:file-data-hide"); // prevents visual glitch
       resizeWindow(640, 330);
       mainWindow.webContents.send("event:file-open", result.filePaths[0]);
@@ -85,7 +70,7 @@ function createWindow() {
   });
 
   // Load html into mainWindow
-  mainWindow.loadFile("mainWindow.html");
+  mainWindow.loadFile("main-window.html");
 
   // Build menu from template
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
