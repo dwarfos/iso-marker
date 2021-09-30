@@ -89,7 +89,7 @@ function FileProgress(fileSize, download) {
 }
 
 // dev v
-import("./lib/window-handler.mjs").then(mjs => {
+import("./lib/window-handler.mjs").then((mjs) => {
   const { WindowHandler } = mjs;
   windowInstance = WindowHandler.newInstance(null, FileProgress);
 });
@@ -97,13 +97,15 @@ import("./lib/window-handler.mjs").then(mjs => {
 
 const onFileOpen = async (e, data) => {
   windowInstance.selectedFile = filePath = data;
-  windowInstance.accountFound.then((accountFound => {
-    accountOffset = windowInstance.accountOffset;
-    onFileOffsetFound(accountFound);
-  })).catch((e) => {
-    console.log(e);
-    onFileOffsetNotFound();
-  });
+  windowInstance.accountFound
+    .then((accountFound) => {
+      accountOffset = windowInstance.accountOffset;
+      onFileOffsetFound(accountFound);
+    })
+    .catch((e) => {
+      console.log(e);
+      onFileOffsetNotFound();
+    });
 
   //const size = fs.statSync(filePath).size;
   //const progress = new FileProgress(size);
@@ -135,7 +137,6 @@ const onAccountSet = () => {
   fs.close(write, () => onFileOpen(undefined, filePath)); // account was set - reload file
 };
 
-
 const onFileSave = (e, data) => {
   filePath = data; // save new selected file path
   fileProgressDownload(0);
@@ -154,7 +155,6 @@ const onFileSave = (e, data) => {
     })
     .on("error", (e) => console.error(e));
 };
-
 
 // Set triggers for button OnClicks.
 // file-open/file-save emitts event for Main to show File Open/Save Dialog.
