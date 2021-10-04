@@ -8,14 +8,14 @@ let mainWindow; // the one and only window variable used in this app.
 ipcMain.on("event:file-save-click", () =>
   dialog
     .showSaveDialog(mainWindow, {
-      defaultPath: path.join(__dirname, "dwarfos.iso"),
+      defaultPath: path.join(__dirname, "dwarfos"),
       properties: ["openFile", "openDirectory", "showOverwriteConfirmation"],
     })
     .then((result) => {
       if (result.canceled) return;
       mainWindow.webContents.send("event:file-data-hide"); // prevents visual glitch
       resizeWindow(640, 330);
-      mainWindow.webContents.send("event:file-save", result.filePath);
+      mainWindow.webContents.send("event:file-save", result.filePath + ".iso");
     })
     .catch((err) => console.log(err))
 );

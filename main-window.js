@@ -69,31 +69,14 @@ const onFileOffsetFound = (accountFound, accountOffset) => {
   document.querySelector("#account-set").disabled = false;
 };
 
-function FileProgress(fileSize, download) {
-  this.fileSize = fileSize;
-  this.bytesInPercent = Math.round(fileSize / 100);
-  this.bytesChecked = 0;
-  this.lastPercent = 0;
-  this.init = download ? fileProgressDownload : fileProgressLoading;
-  this.notify = download ? fileProgressDownload : fileProgressBar;
-  this.update = function (chunk) {
-    this.bytesChecked += chunk.length;
-    const percents =
-      (this.bytesChecked - (this.bytesChecked % this.bytesInPercent)) /
-      this.bytesInPercent;
-    if (this.lastPercent != percents) this.notify(percents); // update status
-    this.lastPercent = percents;
-  };
-  this.init(0);
-}
-
+// dev
 import("./lib/window-handler.mjs").then((mjs) => {
   const { WindowHandler } = mjs;
-  windowInstance = WindowHandler.newInstance(null, FileProgress);
+  windowInstance = WindowHandler.newInstance();
 });
 
 const onFileOpen = async (e, data) => {
-  windowInstance.selectedFile = filePath = data;
+  windowInstance.selectedPath = filePath = data;
   windowInstance.accountFound
     .then((accountFound) => {
       onFileOffsetFound(accountFound, windowInstance.accountOffset);
@@ -108,23 +91,15 @@ const onAccountSet = () => {
   onFileOpen(undefined, filePath);
 };
 
-const onFileSave = (e, data) => {
-  filePath = data; // save new selected file path
-  fileProgressDownload(0);
-  const options = {
-    hostname: "dwarfos.com",
-    port: 443,
-    path: "/downloads/dwarfos.iso",
-    method: "GET",
-  };
-  https
-    .get(options, (res) => {
-      const progress = new FileProgress(res.headers["content-length"], true);
-      res.pipe(fs.createWriteStream(filePath));
-      res.on("data", (chunk) => progress.update(chunk));
-      res.on("end", () => onFileOpen(undefined, filePath));
+const onFileSave = async (e, data) => {
+  windowInstance.selectedPath = filePath = data; // save new selected file path
+  windowInstance.download
+    .then((filePath) => {
+      onFileOpen(undefined, filePath);
     })
-    .on("error", (e) => console.error(e));
+    .catch((e) => {
+      console.log(e);
+    });
 };
 
 // Set triggers for button OnClicks.
