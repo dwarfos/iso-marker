@@ -1,29 +1,21 @@
 const { ipcRenderer } = require("electron");
-const https = require("https");
-const fs = require("fs");
 
 // global var
-let filePath;
 let windowInstance;
 
-// FE funcs
-const fileProgressBar = (percents) => {
-  document.querySelector("#progress-bar").style.width = percents + "%";
-};
-
 const fileDataHide = () => {
-  fileProgressBar(0);
+  document.querySelector("#progress-bar").style.width = 0 + "%";
   document.querySelector("#file-data").style.display = "none";
   ipcRenderer.send("event:file-data-hide"); // send event to Win management process to resize mainWindow
 };
 
 const fileDataShow = () => {
-  fileProgressBar(100);
+  document.querySelector("#progress-bar").style.width = 100 + "%";
   ipcRenderer.send("event:file-data-show"); // send event to Win management process to resize mainWindow
   document.querySelector("#file-data").style.display = "block";
 };
 
-const onFilePath = () => {
+const onFilePath = (filePath) => {
   fileDataHide();
   document.querySelector("#file-path").innerHTML = filePath;
   document.querySelector("#file-open").disabled = true;
@@ -31,22 +23,8 @@ const onFilePath = () => {
   document.querySelector("#account-set").disabled = true;
 };
 
-const fileProgressDownload = (percents) => {
-  if (percents == 0) onFilePath();
-  fileProgressBar(percents);
-  document.querySelector(
-    "#progress-status"
-  ).innerHTML = `Downloading ISO... ${percents}%`;
-};
-
-const fileProgressLoading = () => {
-  onFilePath();
-  document.querySelector("#progress-status").innerHTML =
-    "Searching for File Offset...";
-};
-
 const onFileOffsetNotFound = () => {
-  fileProgressBar(0);
+  fileDataHide();
   document.querySelector("#progress-status").innerHTML =
     "File Offset Not Found!";
 
@@ -75,8 +53,9 @@ import("./lib/window-handler.mjs").then((mjs) => {
   windowInstance = WindowHandler.newInstance();
 });
 
-const onFileOpen = async (e, data) => {
-  windowInstance.selectedPath = filePath = data;
+const onFileOpen = async (e, filePath) => {
+  onFilePath(filePath);
+  windowInstance.selectedPath = filePath;
   windowInstance.accountFound
     .then((accountFound) => {
       onFileOffsetFound(accountFound, windowInstance.accountOffset);
@@ -88,11 +67,12 @@ const onFileOpen = async (e, data) => {
 
 const onAccountSet = () => {
   windowInstance.account = document.querySelector("#account-field").value;
-  onFileOpen(undefined, filePath);
+  onFileOpen(undefined, windowInstance.fileHandler.offsetHandler.filePath);
 };
 
-const onFileSave = async (e, data) => {
-  windowInstance.selectedPath = filePath = data; // save new selected file path
+const onFileSave = async (e, filePath) => {
+  onFilePath(filePath);
+  windowInstance.selectedPath = filePath;
   windowInstance.download
     .then((filePath) => {
       onFileOpen(undefined, filePath);
