@@ -1,7 +1,12 @@
 const { ipcRenderer } = require("electron");
 
-// global var
+// dev
 let windowInstance;
+
+import("./lib/window-handler.mjs").then((mjs) => {
+  const { WindowHandler } = mjs;
+  windowInstance = new WindowHandler();
+});
 
 const fileDataHide = () => {
   document.querySelector("#progress-bar").style.width = 0 + "%";
@@ -47,32 +52,25 @@ const onFileOffsetFound = (accountFound, accountOffset) => {
   document.querySelector("#account-set").disabled = false;
 };
 
-// dev
-import("./lib/window-handler.mjs").then((mjs) => {
-  const { WindowHandler } = mjs;
-  windowInstance = WindowHandler.newInstance();
-});
-
 const onFileOpen = async (e, filePath) => {
-  onFilePath(filePath);
-  windowInstance.selectedPath = filePath;
-  windowInstance.accountFound
+  onFilePath((windowInstance.filePath = filePath));
+  windowInstance.account
     .then((accountFound) => {
       onFileOffsetFound(accountFound, windowInstance.accountOffset);
     })
     .catch((e) => {
+      //console.log(e);
       onFileOffsetNotFound();
     });
 };
 
 const onAccountSet = () => {
   windowInstance.account = document.querySelector("#account-field").value;
-  onFileOpen(undefined, windowInstance.fileHandler.offsetHandler.filePath);
+  onFileOpen(undefined, windowInstance.filePath);
 };
 
 const onFileSave = async (e, filePath) => {
-  onFilePath(filePath);
-  windowInstance.selectedPath = filePath;
+  onFilePath((windowInstance.filePath = filePath));
   windowInstance.download
     .then((filePath) => {
       onFileOpen(undefined, filePath);
