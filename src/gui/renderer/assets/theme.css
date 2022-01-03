@@ -69,12 +69,6 @@ button,
   flex: 1;
 }
 
-#progress-bar {
-  height: 6px;
-  width: 0%;
-  background-color: #ffe724;
-}
-
 .code {
   font-family: monospace;
   font-weight: 600;
@@ -90,4 +84,34 @@ button,
   color: #fbcc56;
   padding: 4px;
   border-radius: 6px;
+}
+
+.progress-bar {
+  height: 6px;
+  position: relative;
+  background: #373737;
+  overflow: hidden;
+}
+
+#progress {
+  display: block;
+  width: 0%;
+  height: 100%;
+  background: #ffe724;
+  transition: width 1s ease-in;
+}
+
+#progress.slow {
+  transition: width 3s ease-in;
+  width: 75%;
+}
+
+#progress.done {
+  transition: width 0.5s ease-out;
+  width: 100%;
+}
+
+#progress.reset {
+  transition: width 0s ease-out;
+  width: 0%;
 }

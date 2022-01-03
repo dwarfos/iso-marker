@@ -12,10 +12,10 @@
     </div>
     <div class="box has-centered">
       <div>
-        <button class="button choose-iso" id="file-open">
+        <button class="button choose-iso" id="file-open" onclick="openFile()">
           Choose Your ISO File
         </button>
-        <button class="button choose-iso" id="file-save">
+        <button class="button choose-iso" id="file-save" onclick="saveFile()">
           Download Your ISO File
         </button>
       </div>
@@ -24,7 +24,9 @@
       <!-- will show the current state of task here -->
       <span id="progress-status"></span>
     </div>
-    <div id="progress-bar"></div>
+    <div class="progress-bar">
+      <span id="progress"></span>
+    </div>
     <div class="box">
       <!-- will show selected file path here -->
       <span id="file-path"></span>
@@ -44,11 +46,15 @@
         <input id="account-field" type="text" />
       </div>
       <div class="box has-centered">
-        <button id="account-set" class="button is-primary" disabled>
+        <button
+          id="account-set"
+          class="button is-primary"
+          onclick="setAccount(newAccount())"
+          disabled
+        >
           Set Account
         </button>
       </div>
     </div>
   </body>
-  <script src="main-window.js"></script>
 </html>

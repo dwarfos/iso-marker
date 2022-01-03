@@ -1,14 +1,6 @@
 const fs = require("fs");
 
 class OffsetHandler {
-  fileProgress = null;
-  filePath = null;
-  offsetMark = null;
-
-  constructor(fileProgress) {
-    this.fileProgress = fileProgress;
-  }
-
   static offsetWrite(filePath, offsetMark, newAccount) {
     let bufferCharArray = [];
     const accountCharArray = newAccount.split("");
@@ -31,22 +23,19 @@ class OffsetHandler {
     fs.writeSync(write, buf, 0, buf.length, offsetMark);
   }
 
-  static offsetPromise(filePath, fileProgress) {
+  static offsetPromise(filePath) {
     return new Promise((success, failure) => {
       if (!filePath) failure("filePath undefined");
-      if (!fileProgress) failure("fileProgress undefined");
       let offset = {};
-      fileProgress.fileSize = fs.statSync(filePath).size;
       const readInterface = fs.createReadStream(filePath, {
         highWaterMark: 1048576,
         encoding: "latin1",
       });
       readInterface.on("data", (chunk) => {
-        fileProgress.update(chunk);
         const search = chunk.search("dwaccount=");
         if (search === -1) return;
         offset = {
-          mark: fileProgress.bytesChecked - chunk.length + search + 10,
+          mark: readInterface.bytesRead - chunk.length + search + 10,
           account: chunk.substring(search + 10, search + 32).split("\n")[0],
         };
         readInterface.destroy();
@@ -54,19 +43,29 @@ class OffsetHandler {
       });
       readInterface.on("close", () => {
         if (offset.mark) return;
-        failure("offsetMark not founnd");
+        failure("File Offset Not Found!");
       });
     });
   }
 
-  async offsetSearch(filePath) {
-    const offset = await this.constructor.offsetPromise(
-      filePath,
-      this.fileProgress
+  static async offsetResolve(filePath) {
+    const offset = await this.offsetPromise(filePath).then(
+      (offset) => {
+        //this.filePath = filePath;
+        //this.offsetMark = result.mark;
+        return offset;
+      },
+      (err) => err
     );
+    return offset;
+  }
+
+  filePath = null;
+  offsetMark = null;
+
+  constructor(filePath, offset) {
     this.filePath = filePath;
     this.offsetMark = offset.mark;
-    return offset.account;
   }
 
   set account(newAccount) {
@@ -74,4 +73,4 @@ class OffsetHandler {
   }
 }
 
-export { OffsetHandler };
+module.exports = { OffsetHandler };
