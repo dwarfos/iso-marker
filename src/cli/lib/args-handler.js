@@ -1,4 +1,7 @@
 const arg = require("arg");
+const path = require("path");
+const { Downloader } = require("./downloader.js");
+const { OffsetHandler } = require("./offset-handler.js");
 
 class ArgsHandler {
   static spec = {
@@ -24,7 +27,7 @@ class ArgsHandler {
     ],
     uses: {
       "--input": "Filepath to check (& set).",
-      "--output": "Download to filepath (& set).",
+      "--output": "Download to file path (& set).",
       "--account": "Account to set to.",
       "--help": "Show this help.",
     },
@@ -47,6 +50,26 @@ class ArgsHandler {
     if (!argArray) return false;
     if (argArray.length > 1) return true;
   }
+
+  static normalizePath(filePath) {
+    return path.normalize(filePath);
+  }
+
+  static download = async (filePath) => {
+    return await Downloader.downloadResolve(filePath);
+  };
+
+  static checkOffset = async (filePath) => {
+    return await OffsetHandler.offsetResolve(filePath);
+  };
+
+  static execQuery = async (output, input, account) => {
+    if (output) input = (await this.download(output)).filePath;
+    const offset = await this.checkOffset(input);
+    if (!account) return console.log(offset.account);
+    new OffsetHandler(input, offset).account = account;
+    console.log((await this.checkOffset(input)).account);
+  };
 
   args = null; // filtered args
   output = null; // filePath where to download
@@ -94,12 +117,14 @@ class ArgsHandler {
       return;
     }
 
-    // console.log("Query nice and sound!");
+    if (this.output)
+      this.output = this.constructor.normalizePath(this.output[0]);
+    if (this.input) this.input = this.constructor.normalizePath(this.input[0]);
+    if (this.account) this.account = this.account[0];
   }
 
-  execQuery() {
-    //
-    // console.log("Done!");
+  handleQuery() {
+    this.constructor.execQuery(this.output, this.input, this.account);
   }
 }
 

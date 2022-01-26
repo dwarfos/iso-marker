@@ -13,7 +13,7 @@ class Main {
     }
 
     // all is well, execute the cli query
-    this.argsHandler.execQuery();
+    this.argsHandler.handleQuery();
   }
 }
 
